@@ -32,15 +32,16 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Search, Eye, Package, DollarSign } from "lucide-react";
+import { Search, Eye, Package, DollarSign, Edit } from "lucide-react";
 import { IOrder, IOrderParams, OrderStatus, PaymentStatus } from "@/interfaces/order";
 import { useGetOrders } from "../hooks/useOrders";
 
 interface OrderManagementTableProps {
 	onViewOrder?: (order: IOrder) => void;
+	onChangeStatus?: (order: IOrder) => void;
 }
 
-export function OrderManagementTable({ onViewOrder }: OrderManagementTableProps) {
+export function OrderManagementTable({ onViewOrder, onChangeStatus }: OrderManagementTableProps) {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [pagination, setPagination] = useState<PaginationState>({
@@ -197,11 +198,24 @@ export function OrderManagementTable({ onViewOrder }: OrderManagementTableProps)
 			header: "Actions",
 			cell: ({ row }) => {
 				const order = row.original;
+				const canChangeStatus =
+					order.orderStatus !== OrderStatus.CANCEL && order.orderStatus !== OrderStatus.SHIPPING;
+
 				return (
 					<div className="flex items-center gap-2">
 						<Button variant="ghost" size="sm" onClick={() => onViewOrder?.(order)}>
 							<Eye className="h-4 w-4" />
 						</Button>
+						{canChangeStatus && (
+							<Button
+								variant="ghost"
+								size="sm"
+								onClick={() => onChangeStatus?.(order)}
+								className="text-blue-600 hover:text-blue-700"
+							>
+								<Edit className="h-4 w-4" />
+							</Button>
+						)}
 					</div>
 				);
 			},

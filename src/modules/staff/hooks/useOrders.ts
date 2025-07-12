@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { staffOrderService } from "../services/order.service";
-import { IOrderParams } from "@/interfaces/order";
+import { IOrderParams, OrderStatus } from "@/interfaces/order";
+import { toast } from "sonner";
 
 // Query keys for order-related queries
 export const orderQueryKeys = {
@@ -18,5 +19,45 @@ export const useGetOrders = (params: IOrderParams) => {
 		queryFn: () => staffOrderService.getOrders(params),
 		staleTime: 30 * 1000, // 30 seconds (orders change frequently)
 		gcTime: 5 * 60 * 1000, // 5 minutes
+	});
+};
+
+// Hook to change order status
+export const useChangeOrderStatus = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({ orderId, status }: { orderId: string; status: OrderStatus }) =>
+			staffOrderService.changeStatus({ status }, orderId),
+		onSuccess: (_, { status }) => {
+			// Invalidate all order list queries to refetch data
+			queryClient.invalidateQueries({
+				queryKey: orderQueryKeys.lists(),
+			});
+			toast.success(`Order status updated to ${status}`);
+		},
+		onError: (error: any) => {
+			toast.error(error?.message || "Failed to update order status");
+		},
+	});
+};
+
+// Hook to cancel order with reason
+export const useCancelOrder = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({ orderId, cancelReason }: { orderId: string; cancelReason?: string }) =>
+			staffOrderService.cancelOrder({ cancelReason }, orderId),
+		onSuccess: () => {
+			// Invalidate all order list queries to refetch data
+			queryClient.invalidateQueries({
+				queryKey: orderQueryKeys.lists(),
+			});
+			toast.success("Order has been cancelled successfully");
+		},
+		onError: (error: any) => {
+			toast.error(error?.message || "Failed to cancel order");
+		},
 	});
 };

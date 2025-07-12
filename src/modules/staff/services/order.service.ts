@@ -10,4 +10,8 @@ export const staffOrderService = {
 		const response = await apiClient.patch(`/orders/${id}/status-change`, params);
 		return response.data;
 	},
+	cancelOrder: async (params: { cancelReason?: string }, id: string) => {
+		const response = await apiClient.patch(`/orders/${id}/cancel`, params);
+		return response.data;
+	},
 };

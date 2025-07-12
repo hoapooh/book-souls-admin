@@ -3,13 +3,18 @@
 import { useState } from "react";
 import { useStaffAuthStore } from "@/modules/staff/stores/auth.store";
 import { redirect } from "next/navigation";
-import { OrderManagementTable, OrderDetailModal } from "@/modules/staff/ui";
+import {
+	OrderManagementTable,
+	OrderDetailModal,
+	OrderStatusChangeDialog,
+} from "@/modules/staff/ui";
 import { IOrder } from "@/interfaces/order";
 
 export default function StaffOrdersPage() {
 	const { user, isLoading } = useStaffAuthStore();
 	const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
-	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+	const [isStatusChangeModalOpen, setIsStatusChangeModalOpen] = useState(false);
 
 	if (isLoading) {
 		return <div>Loading...</div>;
@@ -21,7 +26,12 @@ export default function StaffOrdersPage() {
 
 	const handleViewOrder = (order: IOrder) => {
 		setSelectedOrder(order);
-		setIsModalOpen(true);
+		setIsDetailModalOpen(true);
+	};
+
+	const handleChangeStatus = (order: IOrder) => {
+		setSelectedOrder(order);
+		setIsStatusChangeModalOpen(true);
 	};
 
 	return (
@@ -33,9 +43,19 @@ export default function StaffOrdersPage() {
 				</div>
 			</div>
 
-			<OrderManagementTable onViewOrder={handleViewOrder} />
+			<OrderManagementTable onViewOrder={handleViewOrder} onChangeStatus={handleChangeStatus} />
 
-			<OrderDetailModal order={selectedOrder} open={isModalOpen} onOpenChange={setIsModalOpen} />
+			<OrderDetailModal
+				order={selectedOrder}
+				open={isDetailModalOpen}
+				onOpenChange={setIsDetailModalOpen}
+			/>
+
+			<OrderStatusChangeDialog
+				order={selectedOrder}
+				open={isStatusChangeModalOpen}
+				onOpenChange={setIsStatusChangeModalOpen}
+			/>
 		</div>
 	);
 }
