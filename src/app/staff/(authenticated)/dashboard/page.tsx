@@ -9,8 +9,6 @@ import Link from "next/link";
 export default function StaffDashboardPage() {
 	const { user, isLoading, isAuthenticated } = useStaffAuthStore();
 
-	console.log(JSON.stringify({ user, isLoading }, null, 2));
-
 	if (isLoading) {
 		return <div>Loading...</div>;
 	}

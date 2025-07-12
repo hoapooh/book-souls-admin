@@ -1,9 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import { useStaffAuthStore } from "@/modules/staff/stores/auth.store";
 import { useStaffAuth } from "@/modules/staff/hooks/useAuth";
 import { useStaffProfileValidation } from "@/modules/staff/hooks/useProfileValidation";
-import { redirect, usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
 	Sidebar,
 	SidebarContent,
@@ -18,7 +19,7 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { BookOpen, Package, Home, LogOut } from "lucide-react";
+import { BookOpen, Package, Home, LogOut, MessageCircle } from "lucide-react";
 import Link from "next/link";
 // import { AuthDebugInfo } from "@/components/debug/AuthDebugInfo";
 
@@ -41,6 +42,12 @@ const navigationItems = [
 		icon: Package,
 		id: "orders",
 	},
+	{
+		title: "Chat",
+		href: "/staff/chat",
+		icon: MessageCircle,
+		id: "chat",
+	},
 ];
 
 export default function StaffLayout({ children }: { children: React.ReactNode }) {
@@ -48,15 +55,25 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
 	const { logout } = useStaffAuth();
 	const { isValidating } = useStaffProfileValidation();
 	const pathname = usePathname();
+	const router = useRouter();
+
+	// Handle authentication redirect with useEffect to avoid hook order issues
+	useEffect(() => {
+		if (_hasHydrated && !isLoading && !isValidating && (!isAuthenticated || !user)) {
+			router.push("/staff/login");
+		}
+	}, [_hasHydrated, isLoading, isValidating, isAuthenticated, user, router]);
 
 	// Show loading while hydrating, authenticating, or validating profile
 	if (!_hasHydrated || isLoading || isValidating) {
 		return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
 	}
 
-	// Redirect to login if not authenticated
+	// Show loading while redirecting to login
 	if (!isAuthenticated || !user) {
-		redirect("/staff/login");
+		return (
+			<div className="flex items-center justify-center min-h-screen">Redirecting to login...</div>
+		);
 	}
 
 	return (
