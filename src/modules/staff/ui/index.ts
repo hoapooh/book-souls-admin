@@ -6,3 +6,5 @@ export { StaffLoginForm } from "./LoginForm";
 export { BookManagementTable } from "./BookManagementTable";
 export { BookFormDialog } from "./BookFormDialog";
 export { BookDetailDialog } from "./BookDetailDialog";
+export { OrderManagementTable } from "./OrderManagementTable";
+export { OrderDetailModal } from "./OrderDetailModal";

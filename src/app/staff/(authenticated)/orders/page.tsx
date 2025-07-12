@@ -1,11 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import { useStaffAuthStore } from "@/modules/staff/stores/auth.store";
 import { redirect } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { OrderManagementTable, OrderDetailModal } from "@/modules/staff/ui";
+import { IOrder } from "@/interfaces/order";
 
 export default function StaffOrdersPage() {
 	const { user, isLoading } = useStaffAuthStore();
+	const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
+	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	if (isLoading) {
 		return <div>Loading...</div>;
@@ -14,6 +18,11 @@ export default function StaffOrdersPage() {
 	if (!user) {
 		redirect("/staff/login");
 	}
+
+	const handleViewOrder = (order: IOrder) => {
+		setSelectedOrder(order);
+		setIsModalOpen(true);
+	};
 
 	return (
 		<div className="container mx-auto p-6 space-y-6">
@@ -24,16 +33,9 @@ export default function StaffOrdersPage() {
 				</div>
 			</div>
 
-			<Card>
-				<CardHeader>
-					<CardTitle>All Orders</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className="text-center py-8 text-muted-foreground">
-						Order management functionality coming soon...
-					</div>
-				</CardContent>
-			</Card>
+			<OrderManagementTable onViewOrder={handleViewOrder} />
+
+			<OrderDetailModal order={selectedOrder} open={isModalOpen} onOpenChange={setIsModalOpen} />
 		</div>
 	);
 }
