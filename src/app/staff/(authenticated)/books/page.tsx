@@ -3,7 +3,6 @@
 import { BookManagementTable } from "@/modules/staff/ui/BookManagementTable";
 import { useStaffAuthStore } from "@/modules/staff/stores/auth.store";
 import { redirect } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function StaffBooksPage() {
 	const { user, isLoading } = useStaffAuthStore();
@@ -25,14 +24,7 @@ export default function StaffBooksPage() {
 				</div>
 			</div>
 
-			<Card>
-				<CardHeader>
-					<CardTitle>All Books</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<BookManagementTable />
-				</CardContent>
-			</Card>
+			<BookManagementTable />
 		</div>
 	);
 }

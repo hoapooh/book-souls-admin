@@ -39,6 +39,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Trash2, Search, Eye, Edit, Plus } from "lucide-react";
 import { IBook } from "@/interfaces/book";
 import { useGetAllBooks, useDeleteBook } from "../hooks/useBooks";
+import { BookDetailDialog } from "./BookDetailDialog";
+import { BookFormDialog } from "./BookFormDialog";
 
 interface BookManagementTableProps {
 	onViewBook?: (book: IBook) => void;
@@ -60,6 +62,13 @@ export function BookManagementTable({
 	});
 	const [bookToDelete, setBookToDelete] = useState<IBook | null>(null);
 
+	// Dialog states
+	const [viewDialogOpen, setViewDialogOpen] = useState(false);
+	const [formDialogOpen, setFormDialogOpen] = useState(false);
+	const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
+	const [selectedBook, setSelectedBook] = useState<IBook | null>(null);
+	const [formMode, setFormMode] = useState<"create" | "edit">("create");
+
 	// Query to get books
 	const {
 		data: booksData,
@@ -73,6 +82,27 @@ export function BookManagementTable({
 
 	// Delete mutation
 	const deleteBookMutation = useDeleteBook();
+
+	// Handle dialog actions
+	const handleViewBook = (book: IBook) => {
+		setSelectedBookId(book.id);
+		setViewDialogOpen(true);
+		onViewBook?.(book);
+	};
+
+	const handleEditBook = (book: IBook) => {
+		setSelectedBook(book);
+		setFormMode("edit");
+		setFormDialogOpen(true);
+		onEditBook?.(book);
+	};
+
+	const handleCreateBook = () => {
+		setSelectedBook(null);
+		setFormMode("create");
+		setFormDialogOpen(true);
+		onCreateBook?.();
+	};
 
 	const columns: ColumnDef<IBook>[] = [
 		{
@@ -122,7 +152,11 @@ export function BookManagementTable({
 			header: "Price",
 			cell: ({ row }) => {
 				const price = row.getValue("price") as number;
-				return <span className="font-medium">${price.toFixed(2)}</span>;
+				return (
+					<span className="font-medium">
+						{new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price)}
+					</span>
+				);
 			},
 		},
 		{
@@ -170,10 +204,10 @@ export function BookManagementTable({
 				const book = row.original;
 				return (
 					<div className="flex items-center gap-2">
-						<Button variant="ghost" size="sm" onClick={() => onViewBook?.(book)}>
+						<Button variant="ghost" size="sm" onClick={() => handleViewBook(book)}>
 							<Eye className="h-4 w-4" />
 						</Button>
-						<Button variant="ghost" size="sm" onClick={() => onEditBook?.(book)}>
+						<Button variant="ghost" size="sm" onClick={() => handleEditBook(book)}>
 							<Edit className="h-4 w-4" />
 						</Button>
 						<Button
@@ -239,7 +273,7 @@ export function BookManagementTable({
 								Manage all books in the system. Total books: {booksData?.result?.totalCount || 0}
 							</CardDescription>
 						</div>
-						<Button onClick={onCreateBook}>
+						<Button onClick={handleCreateBook}>
 							<Plus className="h-4 w-4 mr-2" />
 							Add New Book
 						</Button>
@@ -360,6 +394,21 @@ export function BookManagementTable({
 					</AlertDialogFooter>
 				</AlertDialogContent>
 			</AlertDialog>
+
+			{/* Book Detail Dialog */}
+			<BookDetailDialog
+				bookId={selectedBookId}
+				open={viewDialogOpen}
+				onOpenChange={setViewDialogOpen}
+			/>
+
+			{/* Book Form Dialog */}
+			<BookFormDialog
+				book={selectedBook}
+				open={formDialogOpen}
+				onOpenChange={setFormDialogOpen}
+				mode={formMode}
+			/>
 		</div>
 	);
 }

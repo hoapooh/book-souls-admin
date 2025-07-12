@@ -31,7 +31,7 @@ export interface BookCreateParams {
 	title: string;
 	author: string;
 	publisherId: string;
-	categoryIds: string;
+	categoryIds: string[];
 	releaseYear: number;
 	isStricted: boolean;
 	price: number;

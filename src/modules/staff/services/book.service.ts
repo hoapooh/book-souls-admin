@@ -36,7 +36,7 @@ export const staffBookService = {
 		searchParams.append("title", bookData.metadata.title);
 		searchParams.append("author", bookData.metadata.author);
 		searchParams.append("publisherId", bookData.metadata.publisherId);
-		searchParams.append("categoryIds", bookData.metadata.categoryIds);
+		searchParams.append("categoryIds", bookData.metadata.categoryIds.join(","));
 		searchParams.append("releaseYear", bookData.metadata.releaseYear.toString());
 		searchParams.append("isStricted", bookData.metadata.isStricted.toString());
 		searchParams.append("price", bookData.metadata.price.toString());
@@ -65,7 +65,7 @@ export const staffBookService = {
 		searchParams.append("title", bookData.metadata.title);
 		searchParams.append("author", bookData.metadata.author);
 		searchParams.append("publisherId", bookData.metadata.publisherId);
-		searchParams.append("categoryIds", bookData.metadata.categoryIds);
+		searchParams.append("categoryIds", bookData.metadata.categoryIds.join(","));
 		searchParams.append("releaseYear", bookData.metadata.releaseYear.toString());
 		searchParams.append("isStricted", bookData.metadata.isStricted.toString());
 		searchParams.append("price", bookData.metadata.price.toString());

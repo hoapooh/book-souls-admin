@@ -51,6 +51,7 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
 	}
 
 	if (!isAuthenticated || !user) {
+		logout();
 		redirect("/staff/login");
 	}
 
