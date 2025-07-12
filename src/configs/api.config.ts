@@ -18,8 +18,9 @@ apiClient.interceptors.request.use(
 
 		// Check if we're in browser environment
 		if (typeof window !== "undefined") {
-			// Use a single token for all authenticated requests
-			token = localStorage.getItem("access_token");
+			// Try to get staff token first, then admin token
+			token =
+				localStorage.getItem("staff_access_token") || localStorage.getItem("admin_access_token");
 		}
 
 		// Add token to headers if available
@@ -40,18 +41,20 @@ apiClient.interceptors.response.use(
 		return response;
 	},
 	(error) => {
-		/* const { response } = error;
+		const { response } = error;
 
 		// Handle 401 Unauthorized
 		if (response?.status === 401) {
 			// Check if we're in browser environment
 			if (typeof window !== "undefined") {
-				// Clear tokens and redirect based on the request URL
-				if (error.config?.url?.includes("/admin/")) {
+				// Clear tokens and redirect based on current pathname
+				const currentPath = window.location.pathname;
+
+				if (currentPath.startsWith("/admin/")) {
 					localStorage.removeItem("admin_access_token");
 					localStorage.removeItem("admin_user");
 					window.location.href = "/admin/login";
-				} else if (error.config?.url?.includes("/staff/")) {
+				} else if (currentPath.startsWith("/staff/")) {
 					localStorage.removeItem("staff_access_token");
 					localStorage.removeItem("staff_user");
 					window.location.href = "/staff/login";
@@ -72,7 +75,7 @@ apiClient.interceptors.response.use(
 		// Handle network errors
 		if (!response) {
 			console.error("Network error:", error.message);
-		} */
+		}
 
 		return Promise.reject(error);
 	}

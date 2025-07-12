@@ -2,6 +2,7 @@
 
 import { useStaffAuthStore } from "@/modules/staff/stores/auth.store";
 import { useStaffAuth } from "@/modules/staff/hooks/useAuth";
+import { useStaffProfileValidation } from "@/modules/staff/hooks/useProfileValidation";
 import { redirect, usePathname } from "next/navigation";
 import {
 	Sidebar,
@@ -19,6 +20,7 @@ import {
 } from "@/components/ui/sidebar";
 import { BookOpen, Package, Home, LogOut } from "lucide-react";
 import Link from "next/link";
+// import { AuthDebugInfo } from "@/components/debug/AuthDebugInfo";
 
 const navigationItems = [
 	{
@@ -42,16 +44,18 @@ const navigationItems = [
 ];
 
 export default function StaffLayout({ children }: { children: React.ReactNode }) {
-	const { user, isLoading, isAuthenticated } = useStaffAuthStore();
+	const { user, isLoading, isAuthenticated, _hasHydrated } = useStaffAuthStore();
 	const { logout } = useStaffAuth();
+	const { isValidating } = useStaffProfileValidation();
 	const pathname = usePathname();
 
-	if (isLoading) {
+	// Show loading while hydrating, authenticating, or validating profile
+	if (!_hasHydrated || isLoading || isValidating) {
 		return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
 	}
 
+	// Redirect to login if not authenticated
 	if (!isAuthenticated || !user) {
-		logout();
 		redirect("/staff/login");
 	}
 
@@ -112,6 +116,7 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
 					</header>
 					<div className="flex-1 overflow-auto">{children}</div>
 				</main>
+				{/* <AuthDebugInfo /> */}
 			</div>
 		</SidebarProvider>
 	);

@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAdminAuthStore } from "@/modules/admin/stores/auth.store";
 import { useAdminAuth } from "@/modules/admin/hooks/useAuth";
+import { useAdminProfileValidation } from "@/modules/admin/hooks/useProfileValidation";
 import { UserManagementTable } from "@/modules/admin/ui/UserManagementTable";
 import { UserDetailModal } from "@/modules/admin/ui/UserDetailModal";
 import { IUser } from "@/interfaces/user";
@@ -14,21 +15,27 @@ import { Users, BookOpen, ShoppingCart } from "lucide-react";
 
 export default function AdminDashboard() {
 	const router = useRouter();
-	const { user, isAuthenticated } = useAdminAuthStore();
+	const { user, isAuthenticated, _hasHydrated } = useAdminAuthStore();
 	const { logout } = useAdminAuth();
+	const { isValidating } = useAdminProfileValidation();
 	const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
 	const [userDetailModalOpen, setUserDetailModalOpen] = useState(false);
 
 	useEffect(() => {
-		if (!isAuthenticated) {
+		// Wait for hydration before checking authentication
+		if (_hasHydrated && !isAuthenticated) {
 			router.push("/admin/login");
 		}
-	}, [isAuthenticated, router]);
+	}, [isAuthenticated, _hasHydrated, router]);
 
 	const handleViewUser = (user: IUser) => {
 		setSelectedUser(user);
 		setUserDetailModalOpen(true);
 	};
+
+	if (!_hasHydrated || isValidating) {
+		return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+	}
 
 	if (!isAuthenticated || !user) {
 		return null;

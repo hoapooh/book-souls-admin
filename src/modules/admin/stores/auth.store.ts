@@ -14,20 +14,23 @@ interface AdminAuthState {
 	isAuthenticated: boolean;
 	isLoading: boolean;
 	error: string | null;
+	_hasHydrated: boolean;
 	setAuth: (user: User, accessToken: string) => void;
 	clearAuth: () => void;
 	setLoading: (loading: boolean) => void;
 	setError: (error: string | null) => void;
+	setHasHydrated: (state: boolean) => void;
 }
 
 export const useAdminAuthStore = create<AdminAuthState>()(
 	persist(
-		(set) => ({
+		(set, get) => ({
 			user: null,
 			accessToken: null,
 			isAuthenticated: false,
 			isLoading: false,
 			error: null,
+			_hasHydrated: false,
 
 			setAuth: (user, accessToken) => {
 				set({
@@ -36,8 +39,8 @@ export const useAdminAuthStore = create<AdminAuthState>()(
 					isAuthenticated: true,
 					error: null,
 				});
-				localStorage.setItem("access_token", accessToken);
-				localStorage.setItem("user", JSON.stringify(user));
+				localStorage.setItem("admin_access_token", accessToken);
+				localStorage.setItem("admin_user", JSON.stringify(user));
 			},
 
 			clearAuth: () => {
@@ -47,12 +50,13 @@ export const useAdminAuthStore = create<AdminAuthState>()(
 					isAuthenticated: false,
 					error: null,
 				});
-				localStorage.removeItem("access_token");
-				localStorage.removeItem("user");
+				localStorage.removeItem("admin_access_token");
+				localStorage.removeItem("admin_user");
 			},
 
 			setLoading: (loading) => set({ isLoading: loading }),
 			setError: (error) => set({ error }),
+			setHasHydrated: (state) => set({ _hasHydrated: state }),
 		}),
 		{
 			name: "admin-auth-storage",
@@ -61,6 +65,9 @@ export const useAdminAuthStore = create<AdminAuthState>()(
 				accessToken: state.accessToken,
 				isAuthenticated: state.isAuthenticated,
 			}),
+			onRehydrateStorage: () => (state) => {
+				state?.setHasHydrated(true);
+			},
 		}
 	)
 );

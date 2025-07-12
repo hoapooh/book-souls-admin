@@ -14,20 +14,23 @@ interface StaffAuthState {
 	isAuthenticated: boolean;
 	isLoading: boolean;
 	error: string | null;
+	_hasHydrated: boolean;
 	setAuth: (user: User, accessToken: string) => void;
 	clearAuth: () => void;
 	setLoading: (loading: boolean) => void;
 	setError: (error: string | null) => void;
+	setHasHydrated: (state: boolean) => void;
 }
 
 export const useStaffAuthStore = create<StaffAuthState>()(
 	persist(
-		(set) => ({
+		(set, get) => ({
 			user: null,
 			accessToken: null,
 			isAuthenticated: false,
 			isLoading: false,
 			error: null,
+			_hasHydrated: false,
 
 			setAuth: (user, accessToken) => {
 				set({
@@ -36,8 +39,8 @@ export const useStaffAuthStore = create<StaffAuthState>()(
 					isAuthenticated: true,
 					error: null,
 				});
-				localStorage.setItem("access_token", accessToken);
-				localStorage.setItem("user", JSON.stringify(user));
+				localStorage.setItem("staff_access_token", accessToken);
+				localStorage.setItem("staff_user", JSON.stringify(user));
 			},
 
 			clearAuth: () => {
@@ -47,12 +50,13 @@ export const useStaffAuthStore = create<StaffAuthState>()(
 					isAuthenticated: false,
 					error: null,
 				});
-				localStorage.removeItem("access_token");
-				localStorage.removeItem("user");
+				localStorage.removeItem("staff_access_token");
+				localStorage.removeItem("staff_user");
 			},
 
 			setLoading: (loading) => set({ isLoading: loading }),
 			setError: (error) => set({ error }),
+			setHasHydrated: (state) => set({ _hasHydrated: state }),
 		}),
 		{
 			name: "staff-auth-storage",
@@ -61,6 +65,9 @@ export const useStaffAuthStore = create<StaffAuthState>()(
 				accessToken: state.accessToken,
 				isAuthenticated: state.isAuthenticated,
 			}),
+			onRehydrateStorage: () => (state) => {
+				state?.setHasHydrated(true);
+			},
 		}
 	)
 );
