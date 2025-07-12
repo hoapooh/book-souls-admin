@@ -1,0 +1,20 @@
+import { apiClient } from "@/configs/api.config";
+import { LoginBody, LoginResponse } from "@/interfaces/authentication";
+
+export const adminAuthService = {
+	login: async (credentials: LoginBody): Promise<LoginResponse> => {
+		const response = await apiClient.post("/authentication/login", credentials);
+		return response.data;
+	},
+
+	logout: async (): Promise<void> => {
+		// If you have a logout endpoint, implement it here
+		// await apiClient.post('/admin/logout');
+	},
+
+	// Get current user profile
+	getProfile: async (): Promise<any> => {
+		const response = await apiClient.get("/users/profile");
+		return response.data;
+	},
+};
