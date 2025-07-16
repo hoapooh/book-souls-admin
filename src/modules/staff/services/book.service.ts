@@ -12,7 +12,7 @@ export const staffBookService = {
 	}): Promise<IBookResponseType> => {
 		const searchParams = new URLSearchParams();
 
-		if (params?.pageIndex) searchParams.append("page", params.pageIndex.toString());
+		if (params?.pageIndex) searchParams.append("pageIndex", params.pageIndex.toString());
 		if (params?.limit) searchParams.append("limit", params.limit.toString());
 		if (params?.title) searchParams.append("title", params.title);
 		if (params?.categoryIds) searchParams.append("categoryIds", params.categoryIds);

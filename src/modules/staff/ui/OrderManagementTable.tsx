@@ -1,18 +1,19 @@
 "use client";
 
+import { Edit, Eye, Package, Search } from "lucide-react";
 import { useState } from "react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
-	ColumnDef,
-	flexRender,
-	getCoreRowModel,
-	getFilteredRowModel,
-	getPaginationRowModel,
-	getSortedRowModel,
-	useReactTable,
-	SortingState,
-	ColumnFiltersState,
-	PaginationState,
-} from "@tanstack/react-table";
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import {
 	Table,
 	TableBody,
@@ -21,19 +22,20 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import { Search, Eye, Package, DollarSign, Edit } from "lucide-react";
 import { IOrder, IOrderParams, OrderStatus, PaymentStatus } from "@/interfaces/order";
+import {
+	ColumnDef,
+	ColumnFiltersState,
+	flexRender,
+	getCoreRowModel,
+	getFilteredRowModel,
+	getPaginationRowModel,
+	getSortedRowModel,
+	PaginationState,
+	SortingState,
+	useReactTable,
+} from "@tanstack/react-table";
+
 import { useGetOrders } from "../hooks/useOrders";
 
 interface OrderManagementTableProps {
@@ -116,14 +118,14 @@ export function OrderManagementTable({ onViewOrder, onChangeStatus }: OrderManag
 								? "default"
 								: status === OrderStatus.PENDING
 								? "secondary"
-								: status === OrderStatus.SHIPPING
+								: status === OrderStatus.COMPLETED
 								? "outline"
 								: "destructive"
 						}
 						className={
 							status === OrderStatus.ACCEPTED
 								? "bg-green-100 text-green-800 hover:bg-green-100"
-								: status === OrderStatus.SHIPPING
+								: status === OrderStatus.COMPLETED
 								? "bg-blue-100 text-blue-800 hover:bg-blue-100"
 								: ""
 						}
@@ -199,7 +201,7 @@ export function OrderManagementTable({ onViewOrder, onChangeStatus }: OrderManag
 			cell: ({ row }) => {
 				const order = row.original;
 				const canChangeStatus =
-					order.orderStatus !== OrderStatus.CANCEL && order.orderStatus !== OrderStatus.SHIPPING;
+					order.orderStatus !== OrderStatus.CANCEL && order.orderStatus !== OrderStatus.COMPLETED;
 
 				return (
 					<div className="flex items-center gap-2">

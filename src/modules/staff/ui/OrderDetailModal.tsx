@@ -1,5 +1,9 @@
 "use client";
 
+import { Calendar, Package, User } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	Dialog,
 	DialogContent,
@@ -7,10 +11,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Package, DollarSign, User, Calendar, CreditCard } from "lucide-react";
 import { IOrder } from "@/interfaces/order";
 
 interface OrderDetailModalProps {
@@ -28,7 +29,7 @@ export function OrderDetailModal({ order, open, onOpenChange }: OrderDetailModal
 				return "default";
 			case "Pending":
 				return "secondary";
-			case "Shipping":
+			case "Completed":
 				return "outline";
 			case "Cancel":
 				return "destructive";
@@ -104,7 +105,7 @@ export function OrderDetailModal({ order, open, onOpenChange }: OrderDetailModal
 										className={
 											order.orderStatus === "Accepted"
 												? "bg-green-100 text-green-800 hover:bg-green-100"
-												: order.orderStatus === "Shipping"
+												: order.orderStatus === "Completed"
 												? "bg-blue-100 text-blue-800 hover:bg-blue-100"
 												: ""
 										}

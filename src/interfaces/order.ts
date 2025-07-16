@@ -2,7 +2,7 @@ import { Base } from "./base";
 
 export enum OrderStatus {
 	PENDING = "Pending",
-	SHIPPING = "Shipping",
+	COMPLETED = "Completed",
 	ACCEPTED = "Accepted",
 	CANCEL = "Cancel",
 }
