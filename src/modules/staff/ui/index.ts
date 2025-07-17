@@ -9,3 +9,8 @@ export { BookDetailDialog } from "./BookDetailDialog";
 export { OrderManagementTable } from "./OrderManagementTable";
 export { OrderDetailModal } from "./OrderDetailModal";
 export { OrderStatusChangeDialog } from "./OrderStatusChangeDialog";
+
+// Category Management Components
+export { CategoryManagementTable } from "./CategoryManagementTable";
+export { CategoryFormDialog } from "./CategoryFormDialog";
+export { CategoryDetailDialog } from "./CategoryDetailDialog";

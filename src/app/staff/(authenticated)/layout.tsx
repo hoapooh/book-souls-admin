@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
-import { useStaffAuthStore } from "@/modules/staff/stores/auth.store";
-import { useStaffAuth } from "@/modules/staff/hooks/useAuth";
-import { useStaffProfileValidation } from "@/modules/staff/hooks/useProfileValidation";
+import { BookOpen, Home, LogOut, MessageCircle, Package, Tag } from "lucide-react";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
+
 import {
 	Sidebar,
 	SidebarContent,
@@ -19,8 +19,10 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { BookOpen, Package, Home, LogOut, MessageCircle } from "lucide-react";
-import Link from "next/link";
+import { useStaffAuth } from "@/modules/staff/hooks/useAuth";
+import { useStaffProfileValidation } from "@/modules/staff/hooks/useProfileValidation";
+import { useStaffAuthStore } from "@/modules/staff/stores/auth.store";
+
 // import { AuthDebugInfo } from "@/components/debug/AuthDebugInfo";
 
 const navigationItems = [
@@ -31,16 +33,22 @@ const navigationItems = [
 		id: "dashboard",
 	},
 	{
+		title: "Orders",
+		href: "/staff/orders",
+		icon: Package,
+		id: "orders",
+	},
+	{
 		title: "Books",
 		href: "/staff/books",
 		icon: BookOpen,
 		id: "books",
 	},
 	{
-		title: "Orders",
-		href: "/staff/orders",
-		icon: Package,
-		id: "orders",
+		title: "Categories",
+		href: "/staff/categories",
+		icon: Tag,
+		id: "categories",
 	},
 	{
 		title: "Chat",
