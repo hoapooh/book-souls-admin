@@ -36,6 +36,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { BookCreateRequest, IBook } from "@/interfaces/book";
@@ -43,6 +50,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useCreateBook, useUpdateBook } from "../hooks/useBooks";
 import { useGetAllCategories } from "../hooks/useCategories";
+import { useGetAllPublishers } from "../hooks/usePublishers";
 
 const bookFormSchema = z.object({
 	title: z.string().min(1, "Title is required"),
@@ -79,6 +87,12 @@ export function BookFormDialog({ book, open, onOpenChange, mode }: BookFormDialo
 	const { data: categoriesData } = useGetAllCategories({
 		pageIndex: 1,
 		limit: 100, // Get more categories for selection
+	});
+
+	// Get publishers for the select dropdown
+	const { data: publishersData } = useGetAllPublishers({
+		pageIndex: 1,
+		limit: 100, // Get more publishers for selection
 	});
 
 	const form = useForm<BookFormValues>({
@@ -272,9 +286,20 @@ export function BookFormDialog({ book, open, onOpenChange, mode }: BookFormDialo
 								name="publisherId"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Publisher ID *</FormLabel>
+										<FormLabel>Publisher *</FormLabel>
 										<FormControl>
-											<Input placeholder="Enter publisher ID" {...field} />
+											<Select onValueChange={field.onChange} defaultValue={field.value}>
+												<SelectTrigger>
+													<SelectValue placeholder="Select a publisher" />
+												</SelectTrigger>
+												<SelectContent>
+													{publishersData?.result?.items?.map((publisher) => (
+														<SelectItem key={publisher.id} value={publisher.id}>
+															{publisher.name}
+														</SelectItem>
+													))}
+												</SelectContent>
+											</Select>
 										</FormControl>
 										<FormMessage />
 									</FormItem>

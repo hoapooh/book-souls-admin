@@ -47,7 +47,7 @@ export const useStaffAuth = () => {
 		mutationFn: staffAuthService.logout,
 		onSuccess: () => {
 			clearAuth();
-			toast.success("Logged out successfully");
+			toast.success("Bye Bye!");
 			router.push("/staff/login");
 		},
 		onError: (error: AxiosError) => {

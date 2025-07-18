@@ -47,7 +47,7 @@ export const useAdminAuth = () => {
 		mutationFn: adminAuthService.logout,
 		onSuccess: () => {
 			clearAuth();
-			toast.success("Logged out successfully");
+			toast.success("Bye Bye!");
 			router.push("/admin/login");
 		},
 		onError: (error: AxiosError) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, LogOut, MessageCircle, Package, Tag } from "lucide-react";
+import { BookOpen, Building, LogOut, MessageCircle, Package, Tag } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -49,6 +49,12 @@ const navigationItems = [
 		href: "/staff/categories",
 		icon: Tag,
 		id: "categories",
+	},
+	{
+		title: "Publishers",
+		href: "/staff/publishers",
+		icon: Building,
+		id: "publishers",
 	},
 	{
 		title: "Chat",
