@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, Edit, Eye, Plus, Search, Tag, Trash2 } from "lucide-react";
+import { Calendar, Edit, Eye, MoreVertical, Plus, Search, Tag, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -16,6 +16,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
 	Table,
@@ -174,20 +180,30 @@ export function CategoryManagementTable({
 				const category = row.original;
 				return (
 					<div className="flex items-center gap-2">
-						<Button variant="ghost" size="sm" onClick={() => handleViewCategory(category)}>
-							<Eye className="h-4 w-4" />
-						</Button>
-						<Button variant="ghost" size="sm" onClick={() => handleEditCategory(category)}>
-							<Edit className="h-4 w-4" />
-						</Button>
-						<Button
-							variant="ghost"
-							size="sm"
-							onClick={() => setCategoryToDelete(category)}
-							className="text-destructive hover:text-destructive"
-						>
-							<Trash2 className="h-4 w-4" />
-						</Button>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant="ghost" size="sm">
+									<MoreVertical className="h-4 w-4" />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent side="bottom" align="end">
+								<DropdownMenuItem onClick={() => handleViewCategory(category)}>
+									<Eye className="h-4 w-4" />
+									View
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => handleEditCategory(category)}>
+									<Edit className="h-4 w-4" />
+									Edit
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									className="text-destructive"
+									onClick={() => setCategoryToDelete(category)}
+								>
+									<Trash2 className="h-4 w-4 text-destructive" />
+									<span className="text-sm">Delete</span>
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
 					</div>
 				);
 			},
@@ -370,7 +386,7 @@ export function CategoryManagementTable({
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
 						<AlertDialogAction
 							onClick={handleDeleteCategory}
-							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+							className="bg-destructive hover:bg-destructive/90 text-white"
 							disabled={deleteCategoryMutation.isPending}
 						>
 							{deleteCategoryMutation.isPending ? "Deleting..." : "Delete"}

@@ -1,14 +1,8 @@
 "use client";
 
+import { AlertTriangle, CheckCircle, Truck, XCircle } from "lucide-react";
 import { useState } from "react";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
+
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -19,9 +13,17 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
 	Select,
 	SelectContent,
@@ -29,10 +31,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, CheckCircle, Truck, XCircle } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { IOrder, OrderStatus } from "@/interfaces/order";
-import { useChangeOrderStatus, useCancelOrder } from "../hooks/useOrders";
+
+import { useCancelOrder, useChangeOrderStatus } from "../hooks/useOrders";
 
 interface OrderStatusChangeDialogProps {
 	order: IOrder | null;
@@ -60,8 +62,8 @@ export function OrderStatusChangeDialog({
 			case OrderStatus.PENDING:
 				return [OrderStatus.ACCEPTED]; // Cancel is handled separately
 			case OrderStatus.ACCEPTED:
-				return [OrderStatus.SHIPPING]; // Cancel is handled separately
-			case OrderStatus.SHIPPING:
+				return [OrderStatus.COMPLETED]; // Cancel is handled separately
+			case OrderStatus.COMPLETED:
 				return []; // Once shipping, can't change status
 			case OrderStatus.CANCEL:
 				return []; // Once cancelled, can't change status
@@ -71,14 +73,14 @@ export function OrderStatusChangeDialog({
 	};
 
 	const isStatusChangeable = (currentStatus: OrderStatus): boolean => {
-		return currentStatus !== OrderStatus.CANCEL && currentStatus !== OrderStatus.SHIPPING;
+		return currentStatus !== OrderStatus.CANCEL && currentStatus !== OrderStatus.COMPLETED;
 	};
 
 	const getStatusIcon = (status: OrderStatus) => {
 		switch (status) {
 			case OrderStatus.ACCEPTED:
 				return <CheckCircle className="h-4 w-4 text-green-600" />;
-			case OrderStatus.SHIPPING:
+			case OrderStatus.COMPLETED:
 				return <Truck className="h-4 w-4 text-blue-600" />;
 			case OrderStatus.CANCEL:
 				return <XCircle className="h-4 w-4 text-red-600" />;
@@ -93,7 +95,7 @@ export function OrderStatusChangeDialog({
 				return "default";
 			case OrderStatus.PENDING:
 				return "secondary";
-			case OrderStatus.SHIPPING:
+			case OrderStatus.COMPLETED:
 				return "outline";
 			case OrderStatus.CANCEL:
 				return "destructive";
@@ -157,7 +159,7 @@ export function OrderStatusChangeDialog({
 									className={`flex items-center gap-2 w-fit ${
 										order.orderStatus === "Accepted"
 											? "bg-green-100 text-green-800 hover:bg-green-100"
-											: order.orderStatus === "Shipping"
+											: order.orderStatus === "Completed"
 											? "bg-blue-100 text-blue-800 hover:bg-blue-100"
 											: ""
 									}`}

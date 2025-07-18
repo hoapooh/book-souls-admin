@@ -1,19 +1,32 @@
 "use client";
 
+import { MessageCircle, Wifi, WifiOff } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Wifi, WifiOff } from "lucide-react";
+
 import { useChat } from "../hooks/useChat";
 import { ConversationList } from "./ConversationList";
-import { MessageList } from "./MessageList";
 import { MessageInput } from "./MessageInput";
+import { MessageList } from "./MessageList";
 
 interface ChatInterfaceProps {
 	currentUserId: string;
 }
 
 export function ChatInterface({ currentUserId }: ChatInterfaceProps) {
+	const {
+		conversations,
+		selectedConversation,
+		messages,
+		isConnected,
+		isLoading,
+		isLoadingMessages,
+		selectConversation,
+		sendMessage,
+	} = useChat();
+
 	// Early return if no currentUserId to prevent hook issues
 	if (!currentUserId) {
 		return (
@@ -25,17 +38,6 @@ export function ChatInterface({ currentUserId }: ChatInterfaceProps) {
 			</div>
 		);
 	}
-
-	const {
-		conversations,
-		selectedConversation,
-		messages,
-		isConnected,
-		isLoading,
-		isLoadingMessages,
-		selectConversation,
-		sendMessage,
-	} = useChat();
 
 	const handleSendMessage = async (text: string) => {
 		if (!selectedConversation) return false;

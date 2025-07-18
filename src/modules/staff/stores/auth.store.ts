@@ -24,7 +24,7 @@ interface StaffAuthState {
 
 export const useStaffAuthStore = create<StaffAuthState>()(
 	persist(
-		(set, get) => ({
+		(set) => ({
 			user: null,
 			accessToken: null,
 			isAuthenticated: false,

@@ -24,7 +24,7 @@ interface AdminAuthState {
 
 export const useAdminAuthStore = create<AdminAuthState>()(
 	persist(
-		(set, get) => ({
+		(set) => ({
 			user: null,
 			accessToken: null,
 			isAuthenticated: false,

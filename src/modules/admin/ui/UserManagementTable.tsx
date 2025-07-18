@@ -1,26 +1,8 @@
 "use client";
 
+import { Eye, Search, Trash2 } from "lucide-react";
 import { useState } from "react";
-import {
-	ColumnDef,
-	flexRender,
-	getCoreRowModel,
-	getFilteredRowModel,
-	getPaginationRowModel,
-	getSortedRowModel,
-	useReactTable,
-	SortingState,
-	ColumnFiltersState,
-	PaginationState,
-} from "@tanstack/react-table";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table";
+
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -31,15 +13,35 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trash2, Search, Eye } from "lucide-react";
-import { IUser } from "@/interfaces/user";
-import { useGetAllUsers, useDeleteUser } from "../hooks/useUsers";
+import { Input } from "@/components/ui/input";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
 import { AccountRole } from "@/interfaces/authentication";
+import { IUser } from "@/interfaces/user";
+import {
+	ColumnDef,
+	ColumnFiltersState,
+	flexRender,
+	getCoreRowModel,
+	getFilteredRowModel,
+	getPaginationRowModel,
+	getSortedRowModel,
+	PaginationState,
+	SortingState,
+	useReactTable,
+} from "@tanstack/react-table";
+
+import { useDeleteUser, useGetAllUsers } from "../hooks/useUsers";
 
 interface UserManagementTableProps {
 	onViewUser?: (user: IUser) => void;
@@ -334,8 +336,8 @@ export function UserManagementTable({ onViewUser }: UserManagementTableProps) {
 					<AlertDialogHeader>
 						<AlertDialogTitle>Are you sure?</AlertDialogTitle>
 						<AlertDialogDescription>
-							This will permanently delete the user "{userToDelete?.fullName}". This action cannot
-							be undone.
+							This will permanently delete the user &quot;{userToDelete?.fullName}&quot;. This
+							action cannot be undone.
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>

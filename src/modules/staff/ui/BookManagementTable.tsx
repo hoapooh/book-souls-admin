@@ -1,27 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { Edit, Eye, MoreVertical, Plus, Search, Trash2 } from "lucide-react";
 import Image from "next/image";
-import {
-	ColumnDef,
-	flexRender,
-	getCoreRowModel,
-	getFilteredRowModel,
-	getPaginationRowModel,
-	getSortedRowModel,
-	useReactTable,
-	SortingState,
-	ColumnFiltersState,
-	PaginationState,
-} from "@tanstack/react-table";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table";
+import { useState } from "react";
+
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -32,13 +14,39 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trash2, Search, Eye, Edit, Plus } from "lucide-react";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
 import { IBook } from "@/interfaces/book";
-import { useGetAllBooks, useDeleteBook } from "../hooks/useBooks";
+import {
+	ColumnDef,
+	ColumnFiltersState,
+	flexRender,
+	getCoreRowModel,
+	getFilteredRowModel,
+	getPaginationRowModel,
+	getSortedRowModel,
+	PaginationState,
+	SortingState,
+	useReactTable,
+} from "@tanstack/react-table";
+
+import { useDeleteBook, useGetAllBooks } from "../hooks/useBooks";
 import { BookDetailDialog } from "./BookDetailDialog";
 import { BookFormDialog } from "./BookFormDialog";
 
@@ -204,20 +212,27 @@ export function BookManagementTable({
 				const book = row.original;
 				return (
 					<div className="flex items-center gap-2">
-						<Button variant="ghost" size="sm" onClick={() => handleViewBook(book)}>
-							<Eye className="h-4 w-4" />
-						</Button>
-						<Button variant="ghost" size="sm" onClick={() => handleEditBook(book)}>
-							<Edit className="h-4 w-4" />
-						</Button>
-						<Button
-							variant="ghost"
-							size="sm"
-							onClick={() => setBookToDelete(book)}
-							className="text-destructive hover:text-destructive"
-						>
-							<Trash2 className="h-4 w-4" />
-						</Button>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant="ghost" size="sm">
+									<MoreVertical className="h-4 w-4" />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent side="bottom" align="end">
+								<DropdownMenuItem onClick={() => handleViewBook(book)}>
+									<Eye className="h-4 w-4" />
+									View
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => handleEditBook(book)}>
+									<Edit className="h-4 w-4" />
+									Edit
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => setBookToDelete(book)}>
+									<Trash2 className="h-4 w-4 text-destructive" />
+									<span className="text-sm text-destructive">Delete</span>
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
 					</div>
 				);
 			},
@@ -386,7 +401,7 @@ export function BookManagementTable({
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
 						<AlertDialogAction
 							onClick={handleDeleteBook}
-							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+							className="bg-destructive hover:bg-destructive/90 text-white"
 							disabled={deleteBookMutation.isPending}
 						>
 							{deleteBookMutation.isPending ? "Deleting..." : "Delete"}

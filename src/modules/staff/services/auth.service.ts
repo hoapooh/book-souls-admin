@@ -1,5 +1,6 @@
 import { apiClient } from "@/configs/api.config";
 import { LoginBody, LoginResponse } from "@/interfaces/authentication";
+import { IUser } from "@/interfaces/user";
 
 export const staffAuthService = {
 	login: async (credentials: LoginBody): Promise<LoginResponse> => {
@@ -13,7 +14,7 @@ export const staffAuthService = {
 	},
 
 	// Get current user profile
-	getProfile: async (): Promise<any> => {
+	getProfile: async (): Promise<IUser> => {
 		const response = await apiClient.get("/users/profile");
 		return response.data;
 	},

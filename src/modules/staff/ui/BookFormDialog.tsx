@@ -1,9 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Check, ChevronDown, Upload, X } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from "@/components/ui/command";
 import {
 	Dialog,
 	DialogContent,
@@ -22,19 +35,20 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
-import { Card, CardContent } from "@/components/ui/card";
-import { Upload, X } from "lucide-react";
-import { IBook, BookCreateRequest } from "@/interfaces/book";
+import { Textarea } from "@/components/ui/textarea";
+import { BookCreateRequest, IBook } from "@/interfaces/book";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import { useCreateBook, useUpdateBook } from "../hooks/useBooks";
+import { useGetAllCategories } from "../hooks/useCategories";
 
 const bookFormSchema = z.object({
 	title: z.string().min(1, "Title is required"),
 	author: z.string().min(1, "Author is required"),
 	publisherId: z.string().min(1, "Publisher ID is required"),
-	categoryIds: z.string().min(1, "Category IDs are required"),
+	categoryIds: z.array(z.string()).min(1, "At least one category is required"),
 	releaseYear: z
 		.number()
 		.min(1000)
@@ -61,13 +75,19 @@ export function BookFormDialog({ book, open, onOpenChange, mode }: BookFormDialo
 	const createBookMutation = useCreateBook();
 	const updateBookMutation = useUpdateBook();
 
+	// Get categories for the multi-select dropdown
+	const { data: categoriesData } = useGetAllCategories({
+		pageIndex: 1,
+		limit: 100, // Get more categories for selection
+	});
+
 	const form = useForm<BookFormValues>({
 		resolver: zodResolver(bookFormSchema),
 		defaultValues: {
 			title: "",
 			author: "",
 			publisherId: "",
-			categoryIds: "",
+			categoryIds: [],
 			releaseYear: new Date().getFullYear(),
 			isStricted: false,
 			price: 0,
@@ -83,7 +103,7 @@ export function BookFormDialog({ book, open, onOpenChange, mode }: BookFormDialo
 				title: book.title,
 				author: book.author,
 				publisherId: book.publisherId,
-				categoryIds: book.categoryIds.join(","),
+				categoryIds: book.categoryIds,
 				releaseYear: book.releaseYear,
 				isStricted: book.isStricted,
 				price: book.price,
@@ -97,7 +117,7 @@ export function BookFormDialog({ book, open, onOpenChange, mode }: BookFormDialo
 				title: "",
 				author: "",
 				publisherId: "",
-				categoryIds: "",
+				categoryIds: [],
 				releaseYear: new Date().getFullYear(),
 				isStricted: false,
 				price: 0,
@@ -135,10 +155,7 @@ export function BookFormDialog({ book, open, onOpenChange, mode }: BookFormDialo
 					title: data.title,
 					author: data.author,
 					publisherId: data.publisherId,
-					categoryIds: data.categoryIds
-						.split(",")
-						.map((id) => id.trim())
-						.filter((id) => id.length > 0),
+					categoryIds: data.categoryIds,
 					releaseYear: data.releaseYear,
 					isStricted: data.isStricted,
 					price: data.price,
@@ -186,11 +203,7 @@ export function BookFormDialog({ book, open, onOpenChange, mode }: BookFormDialo
 									<div className="flex gap-4">
 										{previewUrl ? (
 											<div className="relative w-32 h-40 bg-gray-100 rounded-lg overflow-hidden">
-												<img
-													src={previewUrl}
-													alt="Book preview"
-													className="w-full h-full object-cover"
-												/>
+												<Image src={previewUrl} alt="Book preview" fill className="object-cover" />
 												<button
 													type="button"
 													onClick={removeImage}
@@ -273,12 +286,86 @@ export function BookFormDialog({ book, open, onOpenChange, mode }: BookFormDialo
 								name="categoryIds"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Category IDs *</FormLabel>
+										<FormLabel>Categories *</FormLabel>
 										<FormControl>
-											<Input placeholder="Enter category IDs (comma-separated)" {...field} />
+											<Popover>
+												<PopoverTrigger asChild>
+													<Button
+														variant="outline"
+														role="combobox"
+														className="w-full justify-between font-normal"
+													>
+														{field.value && field.value.length > 0
+															? `${field.value.length} categories selected`
+															: "Select categories..."}
+														<ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+													</Button>
+												</PopoverTrigger>
+												<PopoverContent className="w-full p-0" align="start">
+													<Command>
+														<CommandInput placeholder="Search categories..." />
+														<CommandEmpty>No categories found.</CommandEmpty>
+														<CommandList>
+															<CommandGroup>
+																{categoriesData?.result?.items?.map((category) => (
+																	<CommandItem
+																		key={category.id}
+																		onSelect={() => {
+																			const currentValue = field.value || [];
+																			const newValue = currentValue.includes(category.id)
+																				? currentValue.filter((id) => id !== category.id)
+																				: [...currentValue, category.id];
+																			field.onChange(newValue);
+																		}}
+																	>
+																		<Check
+																			className={`mr-2 h-4 w-4 ${
+																				field.value?.includes(category.id)
+																					? "opacity-100"
+																					: "opacity-0"
+																			}`}
+																		/>
+																		<div className="flex flex-col">
+																			<span className="font-medium">{category.name}</span>
+																			{/* <span className="text-xs text-muted-foreground truncate max-w-[200px]">
+																				{category.description}
+																			</span> */}
+																		</div>
+																	</CommandItem>
+																))}
+															</CommandGroup>
+														</CommandList>
+													</Command>
+												</PopoverContent>
+											</Popover>
 										</FormControl>
 										<FormDescription>
-											Enter category IDs separated by commas (e.g., cat1,cat2,cat3)
+											{field.value && field.value.length > 0 && (
+												<div className="flex flex-wrap gap-1 mt-2">
+													{field.value.map((categoryId) => {
+														const category = categoriesData?.result?.items?.find(
+															(cat) => cat.id === categoryId
+														);
+														return category ? (
+															<Badge key={categoryId} variant="secondary" className="text-xs">
+																{category.name}
+																<button
+																	type="button"
+																	className="ml-1 hover:text-destructive"
+																	onClick={() => {
+																		const newValue =
+																			field.value?.filter((id) => id !== categoryId) || [];
+																		field.onChange(newValue);
+																	}}
+																>
+																	<X className="h-3 w-3" />
+																</button>
+															</Badge>
+														) : null;
+													})}
+												</div>
+											)}
+											Select one or more categories for this book.
 										</FormDescription>
 										<FormMessage />
 									</FormItem>

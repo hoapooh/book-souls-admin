@@ -7,11 +7,15 @@ export const staffOrderService = {
 		return response.data;
 	},
 	changeStatus: async (params: { status: OrderStatus }, id: string) => {
-		const response = await apiClient.patch(`/orders/${id}/status-change`, params);
+		const response = await apiClient.post(`/orders/${id}/status-change`, null, {
+			params,
+		});
 		return response.data;
 	},
 	cancelOrder: async (params: { cancelReason?: string }, id: string) => {
-		const response = await apiClient.patch(`/orders/${id}/cancel`, params);
+		const response = await apiClient.post(`/orders/${id}/cancel`, null, {
+			params,
+		});
 		return response.data;
 	},
 };

@@ -1,22 +1,33 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
+import { HubConnection } from "@microsoft/signalr";
+
 import { useStaffAuthStore } from "../stores/auth.store";
-import { useState, useEffect } from "react";
 
 interface ChatDebugProps {
 	isConnected: boolean;
-	connection: any;
+	connection: HubConnection | null;
+}
+
+interface LastMessage {
+	time: string;
+	data: {
+		id: string;
+		text: string;
+	};
 }
 
 export function ChatDebugInfo({ isConnected, connection }: ChatDebugProps) {
 	const { accessToken, user } = useStaffAuthStore();
-	const [lastMessage, setLastMessage] = useState<any>(null);
+	const [lastMessage, setLastMessage] = useState<LastMessage | null>(null);
 
 	useEffect(() => {
 		if (!connection) return;
 
 		// Listen for debug messages
-		const handleReceiveMessage = (message: any) => {
+		const handleReceiveMessage = (message: { id: string; text: string }) => {
 			setLastMessage({
 				time: new Date().toLocaleTimeString(),
 				data: message,

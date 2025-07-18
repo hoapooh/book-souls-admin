@@ -1,7 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { staffOrderService } from "../services/order.service";
-import { IOrderParams, OrderStatus } from "@/interfaces/order";
 import { toast } from "sonner";
+
+import { IOrderParams, OrderStatus } from "@/interfaces/order";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { staffOrderService } from "../services/order.service";
 
 // Query keys for order-related queries
 export const orderQueryKeys = {
@@ -36,8 +38,8 @@ export const useChangeOrderStatus = () => {
 			});
 			toast.success(`Order status updated to ${status}`);
 		},
-		onError: (error: any) => {
-			toast.error(error?.message || "Failed to update order status");
+		onError: () => {
+			toast.error("Failed to update order status");
 		},
 	});
 };
@@ -56,8 +58,8 @@ export const useCancelOrder = () => {
 			});
 			toast.success("Order has been cancelled successfully");
 		},
-		onError: (error: any) => {
-			toast.error(error?.message || "Failed to cancel order");
+		onError: () => {
+			toast.error("Failed to cancel order");
 		},
 	});
 };

@@ -29,14 +29,19 @@ export const staffBookService = {
 	},
 
 	// Create new book (staff only)
-	createBook: async (bookData: BookCreateRequest): Promise<any> => {
+	createBook: async (bookData: BookCreateRequest): Promise<void> => {
 		const searchParams = new URLSearchParams();
 
 		// Add metadata parameters as query parameters
 		searchParams.append("title", bookData.metadata.title);
 		searchParams.append("author", bookData.metadata.author);
 		searchParams.append("publisherId", bookData.metadata.publisherId);
-		searchParams.append("categoryIds", bookData.metadata.categoryIds.join(","));
+
+		// Add multiple CategoryIds parameters
+		bookData.metadata.categoryIds.forEach((categoryId) => {
+			searchParams.append("categoryIds", categoryId);
+		});
+
 		searchParams.append("releaseYear", bookData.metadata.releaseYear.toString());
 		searchParams.append("isStricted", bookData.metadata.isStricted.toString());
 		searchParams.append("price", bookData.metadata.price.toString());
@@ -58,14 +63,19 @@ export const staffBookService = {
 	},
 
 	// Update book (staff only)
-	updateBook: async (id: string, bookData: BookCreateRequest): Promise<any> => {
+	updateBook: async (id: string, bookData: BookCreateRequest): Promise<void> => {
 		const searchParams = new URLSearchParams();
 
 		// Add metadata parameters as query parameters
 		searchParams.append("title", bookData.metadata.title);
 		searchParams.append("author", bookData.metadata.author);
 		searchParams.append("publisherId", bookData.metadata.publisherId);
-		searchParams.append("categoryIds", bookData.metadata.categoryIds.join(","));
+
+		// Add multiple CategoryIds parameters
+		bookData.metadata.categoryIds.forEach((categoryId) => {
+			searchParams.append("categoryIds", categoryId);
+		});
+
 		searchParams.append("releaseYear", bookData.metadata.releaseYear.toString());
 		searchParams.append("isStricted", bookData.metadata.isStricted.toString());
 		searchParams.append("price", bookData.metadata.price.toString());
@@ -87,7 +97,7 @@ export const staffBookService = {
 	},
 
 	// Delete book (staff only)
-	deleteBook: async (id: string): Promise<any> => {
+	deleteBook: async (id: string): Promise<void> => {
 		const response = await apiClient.delete(`/books/${id}`);
 		return response.data;
 	},

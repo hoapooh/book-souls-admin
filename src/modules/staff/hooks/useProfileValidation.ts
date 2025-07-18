@@ -1,10 +1,12 @@
 import { useEffect } from "react";
+
 import { useQuery } from "@tanstack/react-query";
+
 import { staffAuthService } from "../services/auth.service";
 import { useStaffAuthStore } from "../stores/auth.store";
 
 export const useStaffProfileValidation = () => {
-	const { user, accessToken, isAuthenticated, clearAuth, _hasHydrated } = useStaffAuthStore();
+	const { accessToken, isAuthenticated, clearAuth, _hasHydrated } = useStaffAuthStore();
 
 	const {
 		data: profileData,
@@ -30,6 +32,6 @@ export const useStaffProfileValidation = () => {
 	return {
 		isValidating: isLoading,
 		isValid: !!profileData && !error,
-		profile: profileData?.result,
+		profile: profileData,
 	};
 };

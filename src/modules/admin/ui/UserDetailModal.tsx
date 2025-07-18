@@ -1,5 +1,10 @@
 "use client";
 
+import { Calendar, Mail, MapPin, Phone, User } from "lucide-react";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	Dialog,
 	DialogContent,
@@ -7,13 +12,9 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { IUser } from "@/interfaces/user";
 import { AccountRole } from "@/interfaces/authentication";
-import { Mail, Phone, MapPin, Calendar, User } from "lucide-react";
+import { IUser } from "@/interfaces/user";
 
 interface UserDetailModalProps {
 	user: IUser | null;

@@ -1,17 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { BookOpen, ShoppingCart, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAdminAuthStore } from "@/modules/admin/stores/auth.store";
+import { IUser } from "@/interfaces/user";
 import { useAdminAuth } from "@/modules/admin/hooks/useAuth";
 import { useAdminProfileValidation } from "@/modules/admin/hooks/useProfileValidation";
-import { UserManagementTable } from "@/modules/admin/ui/UserManagementTable";
+import { useAdminAuthStore } from "@/modules/admin/stores/auth.store";
 import { UserDetailModal } from "@/modules/admin/ui/UserDetailModal";
-import { IUser } from "@/interfaces/user";
-import { Users, BookOpen, ShoppingCart } from "lucide-react";
+import { UserManagementTable } from "@/modules/admin/ui/UserManagementTable";
 
 export default function AdminDashboard() {
 	const router = useRouter();

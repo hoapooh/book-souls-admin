@@ -1,7 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { userService } from "../services/user.service";
-import { AllUserParams } from "@/interfaces/user";
 import { toast } from "sonner";
+
+import { AllUserParams } from "@/interfaces/user";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { userService } from "../services/user.service";
 
 // Query keys for user-related queries
 export const userQueryKeys = {
@@ -46,8 +48,8 @@ export const useDeleteUser = () => {
 			});
 			toast.success("User deleted successfully");
 		},
-		onError: (error: any) => {
-			toast.error(error?.message || "Failed to delete user");
+		onError: () => {
+			toast.error("Failed to delete user");
 		},
 	});
 };

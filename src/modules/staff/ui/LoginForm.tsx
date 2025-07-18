@@ -1,18 +1,20 @@
 "use client";
 
+import { Eye, EyeOff, Lock, User } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Eye, EyeOff, User, Lock } from "lucide-react";
+
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import { useStaffAuth } from "../hooks/useAuth";
 import { useStaffAuthStore } from "../stores/auth.store";
-import { useRouter } from "next/navigation";
 
 const loginSchema = z.object({
 	email: z.email("Please enter a valid email address"),
@@ -111,6 +113,7 @@ export const StaffLoginForm = () => {
 								type="button"
 								variant="outline"
 								className="w-full"
+								disabled={isLoading}
 								onClick={() => router.push("/")}
 							>
 								Go to Home

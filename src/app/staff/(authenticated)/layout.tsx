@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Home, LogOut, MessageCircle, Package, Tag } from "lucide-react";
+import { BookOpen, LogOut, MessageCircle, Package, Tag } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -26,12 +26,12 @@ import { useStaffAuthStore } from "@/modules/staff/stores/auth.store";
 // import { AuthDebugInfo } from "@/components/debug/AuthDebugInfo";
 
 const navigationItems = [
-	{
+	/* {
 		title: "Dashboard",
 		href: "/staff/dashboard",
 		icon: Home,
 		id: "dashboard",
-	},
+	}, */
 	{
 		title: "Orders",
 		href: "/staff/orders",

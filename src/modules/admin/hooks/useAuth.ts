@@ -1,10 +1,13 @@
-import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
+import { handleApiError } from "@/configs/error-handler";
+import { LoginBody } from "@/interfaces/authentication";
+import { useMutation } from "@tanstack/react-query";
+
 import { adminAuthService } from "../services/auth.service";
 import { useAdminAuthStore } from "../stores/auth.store";
-import { LoginBody } from "@/interfaces/authentication";
-import { handleApiError } from "@/configs/error-handler";
-import { toast } from "sonner";
 
 export const useAdminAuth = () => {
 	const router = useRouter();
@@ -30,7 +33,7 @@ export const useAdminAuth = () => {
 			toast.success("Login successful!");
 			router.push("/admin/dashboard");
 		},
-		onError: (error: unknown) => {
+		onError: (error: AxiosError) => {
 			const apiError = handleApiError(error);
 			setError(apiError.message);
 			toast.error(apiError.message);
@@ -47,7 +50,7 @@ export const useAdminAuth = () => {
 			toast.success("Logged out successfully");
 			router.push("/admin/login");
 		},
-		onError: (error: unknown) => {
+		onError: (error: AxiosError) => {
 			const apiError = handleApiError(error);
 			toast.error(apiError.message);
 		},

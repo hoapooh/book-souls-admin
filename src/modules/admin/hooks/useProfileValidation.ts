@@ -1,10 +1,12 @@
 import { useEffect } from "react";
+
 import { useQuery } from "@tanstack/react-query";
+
 import { adminAuthService } from "../services/auth.service";
 import { useAdminAuthStore } from "../stores/auth.store";
 
 export const useAdminProfileValidation = () => {
-	const { user, accessToken, isAuthenticated, clearAuth, _hasHydrated } = useAdminAuthStore();
+	const { accessToken, isAuthenticated, clearAuth, _hasHydrated } = useAdminAuthStore();
 
 	const {
 		data: profileData,
@@ -30,6 +32,6 @@ export const useAdminProfileValidation = () => {
 	return {
 		isValidating: isLoading,
 		isValid: !!profileData && !error,
-		profile: profileData?.result,
+		profile: profileData,
 	};
 };

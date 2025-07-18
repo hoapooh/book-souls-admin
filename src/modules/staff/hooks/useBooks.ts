@@ -1,13 +1,15 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { staffBookService } from "../services/book.service";
-import { BookCreateRequest } from "@/interfaces/book";
 import { toast } from "sonner";
+
+import { BookCreateRequest } from "@/interfaces/book";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { staffBookService } from "../services/book.service";
 
 // Query keys for book-related queries
 export const staffBookQueryKeys = {
 	all: ["staff-books"] as const,
 	lists: () => [...staffBookQueryKeys.all, "list"] as const,
-	list: (params: any) => [...staffBookQueryKeys.lists(), params] as const,
+	list: (params: unknown) => [...staffBookQueryKeys.lists(), params] as const,
 	details: () => [...staffBookQueryKeys.all, "detail"] as const,
 	detail: (id: string) => [...staffBookQueryKeys.details(), id] as const,
 };
@@ -52,8 +54,8 @@ export const useCreateBook = () => {
 			});
 			toast.success("Book created successfully");
 		},
-		onError: (error: any) => {
-			toast.error(error?.message || "Failed to create book");
+		onError: () => {
+			toast.error("Failed to create book");
 		},
 	});
 };
@@ -72,8 +74,8 @@ export const useUpdateBook = () => {
 			});
 			toast.success("Book updated successfully");
 		},
-		onError: (error: any) => {
-			toast.error(error?.message || "Failed to update book");
+		onError: () => {
+			toast.error("Failed to update book");
 		},
 	});
 };
@@ -91,8 +93,8 @@ export const useDeleteBook = () => {
 			});
 			toast.success("Book deleted successfully");
 		},
-		onError: (error: any) => {
-			toast.error(error?.message || "Failed to delete book");
+		onError: () => {
+			toast.error("Failed to delete book");
 		},
 	});
 };

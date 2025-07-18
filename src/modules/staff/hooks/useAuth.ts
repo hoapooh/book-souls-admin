@@ -1,10 +1,13 @@
-import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
+import { handleApiError } from "@/configs/error-handler";
+import { LoginBody } from "@/interfaces/authentication";
+import { useMutation } from "@tanstack/react-query";
+
 import { staffAuthService } from "../services/auth.service";
 import { useStaffAuthStore } from "../stores/auth.store";
-import { LoginBody } from "@/interfaces/authentication";
-import { handleApiError } from "@/configs/error-handler";
-import { toast } from "sonner";
 
 export const useStaffAuth = () => {
 	const router = useRouter();
@@ -28,9 +31,9 @@ export const useStaffAuth = () => {
 				token.accessToken
 			);
 			toast.success("Login successful!");
-			router.push("/staff/dashboard");
+			router.push("/staff/orders");
 		},
-		onError: (error: unknown) => {
+		onError: (error: AxiosError) => {
 			const apiError = handleApiError(error);
 			setError(apiError.message);
 			toast.error(apiError.message);
@@ -47,7 +50,7 @@ export const useStaffAuth = () => {
 			toast.success("Logged out successfully");
 			router.push("/staff/login");
 		},
-		onError: (error: unknown) => {
+		onError: (error: AxiosError) => {
 			const apiError = handleApiError(error);
 			toast.error(apiError.message);
 		},

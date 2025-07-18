@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import { IConversation, IMessage, ISignalRMessage } from "@/interfaces/chat";
 import {
 	HttpTransportType,
 	HubConnection,
 	HubConnectionBuilder,
 	LogLevel,
 } from "@microsoft/signalr";
+
 import { chatService } from "../services/chat.service";
-import { IConversation, IMessage, ISignalRMessage } from "@/interfaces/chat";
-import { toast } from "sonner";
 import { useStaffAuthStore } from "../stores/auth.store";
 
 export const useChat = () => {
