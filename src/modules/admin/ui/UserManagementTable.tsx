@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, Search, Trash2 } from "lucide-react";
+import { Eye, MoreVertical, Search, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -17,6 +17,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
 	Table,
@@ -173,17 +179,26 @@ export function UserManagementTable({ onViewUser }: UserManagementTableProps) {
 				const user = row.original;
 				return (
 					<div className="flex items-center gap-2">
-						<Button variant="ghost" size="sm" onClick={() => onViewUser?.(user)}>
-							<Eye className="h-4 w-4" />
-						</Button>
-						<Button
-							variant="ghost"
-							size="sm"
-							onClick={() => setUserToDelete(user)}
-							className="text-destructive hover:text-destructive"
-						>
-							<Trash2 className="h-4 w-4" />
-						</Button>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant="ghost" size="sm">
+									<MoreVertical className="h-4 w-4" />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent side="bottom" align="end">
+								<DropdownMenuItem onClick={() => onViewUser?.(user)}>
+									<Eye className="h-4 w-4" />
+									View
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									onClick={() => setUserToDelete(user)}
+									className="text-destructive hover:text-destructive"
+								>
+									<Trash2 className="h-4 w-4 text-destructive" />
+									<span className="text-destructive">Delete</span>
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
 					</div>
 				);
 			},

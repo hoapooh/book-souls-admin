@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, ShoppingCart, Users } from "lucide-react";
+import { DollarSign, ShoppingCart, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -9,8 +9,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IUser } from "@/interfaces/user";
 import { useAdminAuth } from "@/modules/admin/hooks/useAuth";
+import { useAdminDashboardSummary } from "@/modules/admin/hooks/useDashboard";
 import { useAdminProfileValidation } from "@/modules/admin/hooks/useProfileValidation";
 import { useAdminAuthStore } from "@/modules/admin/stores/auth.store";
+import { RevenueChart } from "@/modules/admin/ui/RevenueChart";
 import { UserDetailModal } from "@/modules/admin/ui/UserDetailModal";
 import { UserManagementTable } from "@/modules/admin/ui/UserManagementTable";
 
@@ -19,6 +21,7 @@ export default function AdminDashboard() {
 	const { user, isAuthenticated, _hasHydrated } = useAdminAuthStore();
 	const { logout } = useAdminAuth();
 	const { isValidating } = useAdminProfileValidation();
+	const { data: dashboardSummary, isLoading: isSummaryLoading } = useAdminDashboardSummary();
 	const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
 	const [userDetailModalOpen, setUserDetailModalOpen] = useState(false);
 
@@ -62,40 +65,59 @@ export default function AdminDashboard() {
 					</TabsList>
 
 					<TabsContent value="overview" className="space-y-6">
+						{/* Stats Cards */}
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 							<Card>
 								<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-									<CardTitle className="text-sm font-medium">Total Books</CardTitle>
-									<BookOpen className="h-4 w-4 text-muted-foreground" />
+									<CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+									<DollarSign className="h-4 w-4 text-muted-foreground" />
 								</CardHeader>
 								<CardContent>
-									<div className="text-2xl font-bold">1,234</div>
-									<p className="text-xs text-muted-foreground">+20.1% from last month</p>
+									<div className="text-2xl font-bold">
+										{isSummaryLoading
+											? "..."
+											: `${new Intl.NumberFormat("vi-VN", {
+													style: "currency",
+													currency: "VND",
+											  }).format(dashboardSummary?.totalRevenue || 0)}`}
+									</div>
+									{/* <p className="text-xs text-muted-foreground">+20.1% from last month</p> */}
 								</CardContent>
 							</Card>
 
 							<Card>
 								<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-									<CardTitle className="text-sm font-medium">Active Staff</CardTitle>
+									<CardTitle className="text-sm font-medium">Total Users</CardTitle>
 									<Users className="h-4 w-4 text-muted-foreground" />
 								</CardHeader>
 								<CardContent>
-									<div className="text-2xl font-bold">45</div>
-									<p className="text-xs text-muted-foreground">+5 new this month</p>
+									<div className="text-2xl font-bold">
+										{isSummaryLoading
+											? "..."
+											: dashboardSummary?.totalUsers?.toLocaleString() || "0"}
+									</div>
+									{/* <p className="text-xs text-muted-foreground">+5 new this month</p> */}
 								</CardContent>
 							</Card>
 
 							<Card>
 								<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-									<CardTitle className="text-sm font-medium">Orders Today</CardTitle>
+									<CardTitle className="text-sm font-medium">Total Orders</CardTitle>
 									<ShoppingCart className="h-4 w-4 text-muted-foreground" />
 								</CardHeader>
 								<CardContent>
-									<div className="text-2xl font-bold">78</div>
-									<p className="text-xs text-muted-foreground">+12% from yesterday</p>
+									<div className="text-2xl font-bold">
+										{isSummaryLoading
+											? "..."
+											: dashboardSummary?.totalOrders?.toLocaleString() || "0"}
+									</div>
+									{/* <p className="text-xs text-muted-foreground">+12% from yesterday</p> */}
 								</CardContent>
 							</Card>
 						</div>
+
+						{/* Revenue Chart */}
+						<RevenueChart />
 					</TabsContent>
 
 					<TabsContent value="users" className="space-y-6">
