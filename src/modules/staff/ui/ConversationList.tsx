@@ -1,10 +1,11 @@
 "use client";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
-import { IConversation } from "@/interfaces/chat";
 import { formatDistanceToNow, subHours } from "date-fns";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { IConversation } from "@/interfaces/chat";
+import { cn } from "@/lib/utils";
 
 interface ConversationListProps {
 	conversations: IConversation[];
@@ -41,13 +42,18 @@ export function ConversationList({
 						)}
 					>
 						<Avatar className="h-10 w-10">
+							<AvatarImage
+								src={conversation.otherUserAvatar}
+								alt={conversation.otherUserFullName}
+								className="object-cover"
+							/>
 							<AvatarFallback className="text-sm">
 								{conversation.otherUserId.slice(0, 2).toUpperCase()}
 							</AvatarFallback>
 						</Avatar>
 						<div className="flex-1 min-w-0">
 							<div className="flex items-center justify-between">
-								<p className="text-sm font-medium truncate">User</p>
+								<p className="text-sm font-medium truncate">{conversation.otherUserFullName}</p>
 								<p className="text-xs text-muted-foreground shrink-0">
 									{formatDistanceToNow(subHours(new Date(conversation.lastSentAt), 7), {
 										addSuffix: true,

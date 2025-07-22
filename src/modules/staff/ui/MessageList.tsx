@@ -1,11 +1,12 @@
 "use client";
 
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
-import { IMessage } from "@/interfaces/chat";
 import { format, subHours } from "date-fns";
 import { useEffect, useRef } from "react";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { IMessage } from "@/interfaces/chat";
+import { cn } from "@/lib/utils";
 
 interface MessageListProps {
 	messages: IMessage[];
@@ -35,6 +36,38 @@ export function MessageList({ messages, currentUserId, isLoading }: MessageListP
 			<div className="space-y-4">
 				{messages.map((message) => {
 					const isCurrentUser = message.senderId === currentUserId;
+					console.log("Message data:", {
+						id: message.id,
+						sentAt: message.sentAt,
+						sentAtParsed: new Date(message.sentAt),
+						sentAtLocal: new Date(message.sentAt).toLocaleString(),
+						sentAtISO: new Date(message.sentAt).toISOString(),
+					});
+
+					// Helper function to handle timezone safely
+					const formatMessageTime = (sentAt: string) => {
+						try {
+							const date = new Date(sentAt);
+							// Check if the date is valid
+							if (isNaN(date.getTime())) {
+								return "Invalid time";
+							}
+
+							// If the time seems to be in UTC and needs local conversion
+							const now = new Date();
+							const timezoneOffset = now.getTimezoneOffset(); // in minutes
+
+							// Log for debugging
+							console.log("Timezone offset (minutes):", timezoneOffset);
+							console.log("Original date:", date);
+							console.log("Local date:", new Date(date.getTime() - timezoneOffset * 60 * 1000));
+
+							return format(subHours(date, 7), "HH:mm");
+						} catch (error) {
+							console.error("Error formatting time:", error);
+							return "Error";
+						}
+					};
 
 					return (
 						<div
@@ -45,6 +78,13 @@ export function MessageList({ messages, currentUserId, isLoading }: MessageListP
 							)}
 						>
 							<Avatar className="h-8 w-8">
+								{message.senderAvatar && !isCurrentUser && (
+									<AvatarImage
+										src={message.senderAvatar}
+										alt={message.senderId}
+										className="object-cover"
+									/>
+								)}
 								<AvatarFallback className="text-xs">
 									{isCurrentUser ? "S" : message.senderId.slice(0, 2).toUpperCase()}
 								</AvatarFallback>
@@ -62,7 +102,7 @@ export function MessageList({ messages, currentUserId, isLoading }: MessageListP
 										isCurrentUser ? "text-primary-foreground/70" : "text-muted-foreground"
 									)}
 								>
-									{format(subHours(new Date(message.sentAt), 7), "HH:mm")}
+									{formatMessageTime(message.sentAt)}
 								</p>
 							</div>
 						</div>

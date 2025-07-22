@@ -3,6 +3,8 @@ import { Base } from "./base";
 export interface IConversation {
 	conversationId: string;
 	otherUserId: string;
+	otherUserFullName: string;
+	otherUserAvatar: string;
 	lastMessage: string;
 	lastSenderId: string;
 	lastSentAt: string;
@@ -16,6 +18,7 @@ export interface IMessage {
 	id: string;
 	conversationId: string;
 	senderId: string;
+	senderAvatar: string;
 	receiverId: string;
 	text: string;
 	sentAt: string;
